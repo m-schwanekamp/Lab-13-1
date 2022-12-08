@@ -2,62 +2,77 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<sstream>
+#include<vector>
 
-void pressEnterToContinue();
-int countChar(string filename);
-int countWords(string filename);
 using namespace std;
+void pressEnterToContinue();
+bool readFromFile(string filename);
+void CountChars(string filename);
+void countWords(string filename);
+
+
 
 int main() {
     string datafile;
     cout << "input file: ";
     getline(cin, datafile);
+    bool status = readFromFile(datafile);
+    if (status) cout << "Success!\n";
+    else cout << "failure.\n";
+    countWords(datafile);
+    CountChars(datafile);
     pressEnterToContinue();
-    int words = countWords(datafile);
-    cout << "Words: " << words << endl;
-    int letters = countChar(datafile);
-    cout << "Characters: " << letters << endl;
 }
 
-int countChar(string filename){
+bool readFromFile(string filename) {
     ifstream inFile;
-    int total = 0, tot_words = 0, i = 0;
-    char ch, str[1000];
+    string text;
+    istringstream thisLine;
     inFile.open(filename);
-    while (inFile >> filename >> ch) {
-        str[total] = ch;
-        total++;
+
+    if (inFile.fail()) {
+        cout << "read error";
+        return false;
+    }
+    while (true) {
+        getline(inFile, text);
+        if (inFile.fail()) break;
+        thisLine.clear();
+        thisLine.str(text);
+        cout << text << endl;
     }
     inFile.close();
-    str[total] = '\0';
-    while (str[i] != '\0') {
-        if (str[i] == '\n') {
-            if (str[i + 1] != '\0' && str[i + 1] != ' ') {
-                tot_words++;
-                i++;
-            }
-        }
-        else if (str[i] != ' ') i++;
-        else {
-            if (str[i + 1] != '\0' && str [i + 1] != ' ') {
-                tot_words++;
-                i++;
-            }
-        }
-    }
-    return tot_words;
+    return true;
 }
 
-int countWords(string filename) {
+void countWords(string filename) {
     ifstream inFile;
     int tot = 0;
-    char file[1000], ch;
+    int words = 0;
+    int i = 0;
+    string ch;
+    char str[1000];
+
     inFile.open(filename);
-    while(inFile >> filename >> ch) {
+    while (inFile >> ch) {
+        words++;
+    }
+    inFile.close();
+    
+    cout << "Words: " << words << endl;
+}
+
+void CountChars(string filename) {
+    ifstream inFile;
+    int tot = 0;
+    char ch;
+    inFile.open(filename);
+    while (inFile >> ch) {
         tot++;
     }
     inFile.close();
-    return tot;
+    cout << "Characters: " << tot << endl;
 }
 
 void pressEnterToContinue() {
